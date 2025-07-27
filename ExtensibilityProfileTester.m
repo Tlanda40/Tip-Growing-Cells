@@ -1,16 +1,45 @@
-A1=0.27;
-A2=10;
-w1=0.1;
-w2=0.1;
+% This function creates a mixed Gaussian extensibility profile
+function y = ext(beta, x)
+    C1=abs(beta(1));
+    C2=abs(beta(2));
+    a1=beta(3);
+    a2=beta(4);
+    y=C1*exp(-(x/a1).^2)+C2*exp(-(x/a2).^2);
+end
+
+% Parameters for ext
+beta0 = [0.00375,0.13875,0.01,0.001]';
+
+% Visualize ext and Young's Modulus
+xlim=0.01;
+x=-xlim:0.0002:xlim;
+y = ext(beta0, x);
+z = 500 ./ ext(beta0, x);  % Young's Modulus as function of ext
+figure, plot(x, y)
+figure,plot(x, z)
+
+% OPTIONAL Code for a Gaussian mix in two variables
+%{
+% Parameters for Gaussian mix for Gaussian of two variables
+A1=0.15;
+A2=7;
+w1=0.07;
+w2=0.01;
 xlim=1;
 ylim=1;
 
+% Create Gaussian mix
 x=[-xlim:0.02:xlim];
 y=[-ylim:0.02:ylim];
 g1 = A1*exp(-(x/w1).^2);
 g2 = A2*exp(-(x/w2).^2);
 Gmix = g1 + g2;
 
+% Visualize Gmix
+figure,
+plot(x,Gmix)
+
+% Create Gaussian of two variables
 [Xg,Yg]=meshgrid(x,y);
 
 g1x = A1*exp(-(Xg/w1).^2);
@@ -23,11 +52,9 @@ Gmixy = g1y + g2y;
 
 G=Gmixx.*Gmixy;
 
-
-
+% Visualize Gaussian of two variables
 figure,
 surf(Xg,Yg,G)
 xlabel('x')
 ylabel('y')
-
-figure,plot(x,Gmix), fig2pretty
+%}
