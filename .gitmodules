@@ -1,0 +1,9 @@
+[submodule "geodesic_example/external/libigl"]
+	path = geodesic_example/external/libigl
+	url = https://github.com/libigl/libigl.git
+[submodule "external/gptoolbox"]
+	path = external/gptoolbox
+	url = https://github.com/alecjacobson/gptoolbox.git
+[submodule "external/geodesic"]
+	path = external/geodesic
+	url = https://github.com/zishun/geodesic_matlab.git
