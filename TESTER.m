@@ -31,7 +31,6 @@ figure;
 pdemesh(model,'FaceAlpha', 0.3);
 title('Tetrahedral Mesh of Direct hollow sphere');
 
-%{
 % Extract Nx3 vertices matrix
 V = model.Mesh.Nodes';  %transpose because nodes is 3xN
 
@@ -53,7 +52,7 @@ F = getSurfaceFacesFromTetrahedra(T);
 poleCoord = [0, 0, 0.01];           % Your pole location
 poleIdx = knnsearch(V, poleCoord);  % Closest vertex on the surface
 fprintf("Pole index is %d, pole coords are [%d, %d, %d]\n", poleIdx, V(poleIdx, 1), V(poleIdx, 2), V(poleIdx, 3));
-%}
+
 
 %THIS MAKES AN ALPHASHAPE
 %{
@@ -63,7 +62,7 @@ figure;
 plot(shp);
 %}
 
-
+%{
 %THIS IS THE WORKING METHOD USING DIJKSTRA'S ALGORITHM
 
 % Create V (vertices) and T (tetrahedra) for graph creation
@@ -124,7 +123,7 @@ pathCoords = V(pathIdx, :);  % Nx3, their coordinates
 plot3(pathCoords(:,1), pathCoords(:,2), pathCoords(:,3), ...
       'r-', 'LineWidth', 3);
 
-
+%}
 
 
 %insert structural properties. For now, it will be some kind of basic
