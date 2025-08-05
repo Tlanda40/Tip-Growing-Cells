@@ -1,10 +1,10 @@
 % Helper function to define extensibility profile
-function y = ext(beta, x, y)
+function y = ext(beta, x)
     C1=abs(beta(1));
     C2=abs(beta(2));
     a1=beta(3);
     a2=beta(4);
-    y=C1*exp(-((sqrt(x.^2+y.^2))/a1).^2)+C2*exp(-((sqrt(x.^2+y.^2))/a2).^2);
+    y=C1*exp(-(x/a1).^2)+C2*exp(-(x/a2).^2)+0.0001;
 end
 
 % Helper function to define stiffness
@@ -58,7 +58,7 @@ fprintf("Pole index is %d, pole coords are [%d, %d, %d]\n", poleIdx, V(poleIdx, 
 
 % Compute lengths of geodesics. s stores arclength.
 G = meshToSparseGraph(V, T);
-s = distances(G, poleIdx);  % s(i) is geodesic distance to vertex i
+s = distances(G, poleIdx);  % s(i) is geodesic Dijkstra distance to vertex i
 
 % Extract faces from tetrahedral elements to visualize s with trisurf
 function F = getSurfaceFacesFromTetrahedra(T)
@@ -95,9 +95,7 @@ plot3(pathCoords(:,1), pathCoords(:,2), pathCoords(:,3), ...
 %thing, with uniform structural properties (as opposed to properties that
 %are a function of arc length.
 
-E = 1e6;            % Base Young's modulus (Pa)
 nu = 0.3;           % Poisson's ratio
-rho = 1000;         % Mass Density, only relevant in a transient-solid model
 p = 1e2;            % Pressure
 beta0 = [0.00375,0.13875,0.01,0.001]'; % Inputs for extensibility profile
 
@@ -106,18 +104,18 @@ beta0 = [0.00375,0.13875,0.01,0.001]'; % Inputs for extensibility profile
 % Here are the material properties
 model.MaterialProperties.PoissonsRatio = nu;
 
-val = @(location,state) youngMod(ext(beta0, location.x, location.y));
+kdtree = createns(V, 'NSMethod', 'kdtree');
+val = @(location,state) youngMod(ext(beta0, s(knnsearch(kdtree, ...
+    [location.x(:), location.y(:), location.z(:)]))));
+
+%val = @(location,state) youngMod(ext(beta0, location.x, location.y));
 model.MaterialProperties.YoungsModulus = val;
 
 % Applying Neumann boundary conditions to innerFaces
 model.FaceLoad(3) = faceLoad(Pressure = p); % Pressure in Pascals
 
-% Finding the bottom vertices, and applying Dirichlet boundary conditions
+% Applying Dirichlet boundary conditions to bottom faces
 model.FaceBC([2,4]) = faceBC(Constraint="fixed");
-% Finding the bottom vertices, and applying Dirichlet boundary conditions
-%z_thresh = 0.00105;
-%indices = find(g.Vertices(:,3) <= z_thresh);
-%model.VertexBC(indices) = vertexBC(Constraint="fixed");
 
 fprintf('BCs and Material Properties set.\n');
 results = solve(model);
@@ -129,4 +127,4 @@ figure;
 pdeplot3D(model.Mesh,'ColorMapData', u.Magnitude, 'FaceAlpha', 0.3, ...
     'Deformation', u, ...
     'DeformationScaleFactor', 1);
-title('Displacement colormap')
+title('Dijkstra Displacement colormap')

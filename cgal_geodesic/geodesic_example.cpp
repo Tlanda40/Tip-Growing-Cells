@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
     shortest_paths.add_source_point(source_v);
 
     // Compute and print distance to all other vertices
-    std::ofstream out("distances.txt");
+    std::ofstream out("mmpdistances.txt");
 
     for (auto vd : mesh.vertices()) {
     double d = shortest_paths.shortest_distance_to_source_points(vd).first;

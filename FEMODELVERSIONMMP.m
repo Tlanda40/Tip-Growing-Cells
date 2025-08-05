@@ -1,10 +1,10 @@
 % Helper function to define extensibility profile
-function y = ext(beta, x, y)
+function y = ext(beta, x)
     C1=abs(beta(1));
     C2=abs(beta(2));
     a1=beta(3);
     a2=beta(4);
-    y=C1*exp(-((sqrt(x.^2+y.^2))/a1).^2)+C2*exp(-((sqrt(x.^2+y.^2))/a2).^2);
+    y=C1*exp(-(x/a1).^2)+C2*exp(-(x/a2).^2)+0.0001; %0.0001 so no 0
 end
 
 % Helper function to define stiffness
@@ -31,6 +31,7 @@ figure;
 pdemesh(model,'FaceAlpha', 0.3);
 title('Tetrahedral Mesh of Direct hollow sphere');
 
+% TOPOLOGICAL MANIFOLD EXTRACTION PROCESS FOR CGAL GEODESIC
 % Step 1: Get free boundary
 V = model.Mesh.Nodes';
 T = model.Mesh.Elements';
@@ -86,6 +87,7 @@ F_final = F_clean(keepFaces, :);
 V_final = V_clean(uniqueVerts2, :);
 F_final = reshape(ic2, size(F_final));
 
+% Step 7: Visualize manifold
 figure;
 trisurf(F_final, V_final(:,1), V_final(:,2), V_final(:,3), ...
     'FaceAlpha', 0.6);
@@ -93,19 +95,25 @@ trisurf(F_final, V_final(:,1), V_final(:,2), V_final(:,3), ...
 % Find index of pole vertex
 poleCoord = [0, 0, 0.01];           % Your pole location
 poleIdx = knnsearch(V_final, poleCoord);  % Closest vertex on the surface
-fprintf("Pole index is %d, pole coords are [%d, %d, %d]\n", poleIdx, V_final(poleIdx, 1), V_final(poleIdx, 2), V_final(poleIdx, 3));
+fprintf("Pole index is %d, pole coords are [%d, %d, %d]\n", ...
+    poleIdx, ...
+    V_final(poleIdx, 1), ...
+    V_final(poleIdx, 2), ...
+    V_final(poleIdx, 3));
 
 targetCoord = [-0.00545175, -0.00450885, 0.007044]; % a target point
 targetIdx = knnsearch(V_final, targetCoord); % the closest node to target
-targetIdx
+fprintf("Random target point index is %d\n", targetIdx);
 
+% CALL WRITE_OFF HELPER FILE TO CONVERT MANIFOLD TO .OFF FOR CGAL
 %write_off('init_mesh_test.off', V_final, F_final);
 
-geodistances = readmatrix('distances.txt');  % Nx2 matrix
-vertex_indices = geodistances(:,1) + 1;      % CGAL is 0-indexed, MATLAB is 1-indexed
-D = geodistances(:,2);
+% READ IN GEODESICS FROM TEXT FILE
+geodistances = readmatrix('mmpdistances.txt'); % Nx2 matrix (vertIdx, geodist)
+vertex_indices = geodistances(:,1) + 1; % C++ is 0-idxed, MATLAB is 1-idxed
+Dist = geodistances(:,2);
 
-% Visualize arclength by color
+% Visualize geodesic distance on manifold by color
 figure;
 trisurf(F_final, V_final(:,1), V_final(:,2), V_final(:,3), D, ...
         'EdgeColor', 'none', 'FaceAlpha', 0.9);
@@ -116,3 +124,33 @@ axis equal;
 
 P = readmatrix("path.txt");
 plot3(P(:,1), P(:,2), P(:,3), 'r-', 'LineWidth', 2);
+
+nu = 0.3;           % Poisson's ratio
+p = 1e2;            % Pressure
+
+beta0 = [0.00375,0.13875,0.01,0.001]'; % Inputs for extensibility profile
+kdtree = createns(V_final, 'NSMethod', 'kdtree');
+val = @(location,state) youngMod(ext(beta0, Dist(knnsearch(kdtree, ...
+    [location.x(:), location.y(:), location.z(:)]))))';
+
+% Here are the material properties
+model.MaterialProperties.PoissonsRatio = nu;
+model.MaterialProperties.YoungsModulus = val;
+
+% Applying Neumann boundary conditions to inner faces
+model.FaceLoad(3) = faceLoad(Pressure = p); % Pressure in Pascals
+
+% Applying Dirichlet boundary conditions to bottom
+model.FaceBC([2,4]) = faceBC(Constraint="fixed");
+
+fprintf('BCs and Material Properties set.\n');
+results = solve(model);
+fprintf('Solved!\n');
+
+% visualize
+u = results.Displacement;
+figure;
+pdeplot3D(model.Mesh,'ColorMapData', u.Magnitude, 'FaceAlpha', 0.3, ...
+    'Deformation', u, ...
+    'DeformationScaleFactor', 1);
+title('MMP Displacement colormap')
