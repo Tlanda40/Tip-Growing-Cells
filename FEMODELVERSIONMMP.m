@@ -91,6 +91,7 @@ F_final = reshape(ic2, size(F_final));
 figure;
 trisurf(F_final, V_final(:,1), V_final(:,2), V_final(:,3), ...
     'FaceAlpha', 0.6);
+title('manifold mesh');
 axis equal;
 
 % Find index of pole vertex
