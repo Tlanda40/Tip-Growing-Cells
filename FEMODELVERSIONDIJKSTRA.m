@@ -79,7 +79,7 @@ figure;
 trisurf(F, V(:,1), V(:,2), V(:,3), s, ...
         'EdgeColor', 'none', 'FaceAlpha', 0.4);
 colormap(turbo); colorbar;
-title('Geodesic Distance from Pole');
+title('Dijkstra Geodesic Distance from Pole');
 hold on;
 axis equal;
 

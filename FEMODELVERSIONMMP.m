@@ -91,6 +91,7 @@ F_final = reshape(ic2, size(F_final));
 figure;
 trisurf(F_final, V_final(:,1), V_final(:,2), V_final(:,3), ...
     'FaceAlpha', 0.6);
+axis equal;
 
 % Find index of pole vertex
 poleCoord = [0, 0, 0.01];           % Your pole location
@@ -115,10 +116,10 @@ Dist = geodistances(:,2);
 
 % Visualize geodesic distance on manifold by color
 figure;
-trisurf(F_final, V_final(:,1), V_final(:,2), V_final(:,3), D, ...
+trisurf(F_final, V_final(:,1), V_final(:,2), V_final(:,3), Dist, ...
         'EdgeColor', 'none', 'FaceAlpha', 0.9);
 colormap(turbo); colorbar;
-title('Geodesic Distance from Pole');
+title('MMP Geodesic Distance from Pole');
 hold on;
 axis equal;
 
