@@ -123,21 +123,18 @@ if ispc
     exeCommand = sprintf('%s %s %d', exeName, offFileName, poleIdx-1);
 else
     exeName = exeBaseName;
-    exeCommand = sprintf('./%s %s %d', exeName, offFileName, poleIdx-1);
+    [status, cmdout] = system(['cd ', cppFolder, ' && ./geodesic_example']);
 end
-
-cmd = sprintf('cd "%s" && %s', cppFolder, exeCommand);
-[status, cmdout] = system(cmd);
 
 if status ~= 0
     error('C++ executable failed:\n%s', cmdout);
-else
-    disp('C++ processing complete.');
 end
+disp('C++ processing complete.');
 
 movefile(fullfile(cppFolder, 'mmpdistances.txt'), fullfile(pwd, 'mmpdistances.txt'));
 movefile(fullfile(cppFolder, 'path.txt'), fullfile(pwd, 'path.txt'));
 
+%{
 % READ IN GEODESICS FROM TEXT FILE
 geodistances = readmatrix('mmpdistances.txt'); % Nx2 matrix (vertIdx, geodist)
 vertex_indices = geodistances(:,1) + 1; % C++ is 0-idxed, MATLAB is 1-idxed
@@ -184,3 +181,4 @@ pdeplot3D(model.Mesh,'ColorMapData', u.Magnitude, 'FaceAlpha', 0.3, ...
     'Deformation', u, ...
     'DeformationScaleFactor', 1);
 title('MMP Displacement colormap')
+%}
