@@ -9,10 +9,10 @@ recent iterations are directly exposed in Tip-Growing-Cells, whereas older
 versions, references, and other tools are stored in subfolders in case they are
 needed. When files in subfolders are no longer needed, they are removed. See the
 **Table of Contents** for descriptions of the subfolders and exposed files and
-see **Instructions** for help with setup, installation of dependencies, and 
-troubleshooting. This repo is a work in progress!
+see **Instructions** for help with setup and installation of dependencies.
+This repo is a work in progress!
 
-## Table of Contents
+# Table of Contents
 ### FreeCAD Macros
 These files are FreeCad macros (and their CAD realizations) used to create the
 initial geometry.
@@ -95,4 +95,59 @@ This file writes a .off file given matrices V and F (vertices and faces) of a me
 It is called by `FEMODELVERSIONMMP.m` in order to export the mesh into a format
 acceptable to CGAL functions.
 
-## Instructions
+# Instructions
+To ensure that files in subfolders are accessible to exposed files, it is necessary
+to add them to the path. Change the path to `Tip-Growing-Cells`, then run
+`addpath(genpath(pwd)))` in the MATLAB console. Then install dependencies, build,
+and run. Bear in mind that the only MATLAB file that requires the C++ requirements
+and setup is `FEMODELVERSIONMMP.m`, so if you just want to run other things, those
+are not necessary.
+
+## 🧱 Dependencies
+To build and run this project, you'll need:
+
+### C++ Requirements
+- [CMake](https://cmake.org/download/) (for the C++ build process)
+- A C++ compiler (GCC or Clang for macOS; Visual Studio for Windows)
+- [CGAL](https://www.cgal.org/download/) (The Computational Geometry Algorithms Library)
+- [Boost](https://www.boost.org/) — required by some CGAL functions
+- [Eigen](https://eigen.tuxfamily.org/) — required by CGAL
+
+### MATLAB Requirements
+- This code has only been run on MATLAB R2025a or later. Using significantly earlier versions
+may cause errors.
+- Two special MATLAB toolboxes are required: "Statistics and Machine Learning Toolbox" and "Partial Differential Equation Toolbox". Other toolboxes may be required by some older archived versions.
+
+## C++ Setup
+### 🪟 Windows (with Visual Studio)
+
+1. Install [CMake](https://cmake.org/download/) and [Visual Studio](https://visualstudio.microsoft.com/) with C++ tools.
+2. Open the "x64 Native Tools Command Prompt for VS".
+3. Run the following commands:
+
+```bash
+cd cgal_geodesic
+mkdir build
+cd build
+cmake .. -G "Visual Studio 18 2025" 
+cmake --build . --config Release
+```
+
+### 🍎 macOS / 🐧 Linux
+
+1. Install CMake and a C++ compiler (Clang for macOS, or GCC)
+2. Open Terminal
+3. Build the code:
+
+```bash
+cd cgal_geodesic
+mkdir build
+cd build
+cmake ..
+make
+```
+
+✅ These processes create the executable inside `CGAL/build/`. Then you're good to run `FEMODELVERSIONMMP.m`!
+Note that MATLAB behaves mostly the same across OSes, except when calling executables. However, the MATLAB
+script auto-detects OS and chooses between `geodesic_example` (mac/Linux) or `geodesic_example.exe` (Windows),
+so no changes need to be made to the MATLAB file.
