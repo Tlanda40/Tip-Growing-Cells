@@ -14,7 +14,7 @@ This repo is a work in progress!
 
 # Table of Contents
 ### FreeCAD Macros
-These files are FreeCad macros (and their CAD realizations) used to create the
+These files are FreeCad macros used to create the
 initial geometry.
 
 ### General PDEMODEL
