@@ -1,1 +1,0 @@
-/usr/bin/c++  -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/compute_geodesics.dir/compute_geodesics.cpp.o -o compute_geodesics  /opt/homebrew/lib/libgmpxx.dylib /opt/homebrew/lib/libmpfr.dylib /opt/homebrew/lib/libgmp.dylib

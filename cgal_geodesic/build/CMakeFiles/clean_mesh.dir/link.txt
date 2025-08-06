@@ -1,1 +1,0 @@
-/usr/bin/c++  -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/clean_mesh.dir/clean_mesh.cpp.o -o clean_mesh  /opt/homebrew/lib/libgmpxx.dylib /opt/homebrew/lib/libmpfr.dylib /opt/homebrew/lib/libgmp.dylib
