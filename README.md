@@ -12,7 +12,7 @@ needed. When files in subfolders are no longer needed, they are removed. See the
 for descriptions  and see **Instructions** for help with setup, installation
 of dependencies, and troubleshooting. This repo is a work in progress! See
 **Updates** to see my work pipeline and the latest updates.
----
+
 ## Table of Contents
 ### FreeCAD Macros
 These files are FreeCad macros (and their CAD realizations) used to create the
