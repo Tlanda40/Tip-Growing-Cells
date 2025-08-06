@@ -155,6 +155,9 @@ axis equal;
 P = readmatrix("path.txt");
 plot3(P(:,1), P(:,2), P(:,3), 'r-', 'LineWidth', 2);
 
+delete('mmpdistances.txt');
+delete('path.txt');
+
 nu = 0.3;           % Poisson's ratio
 p = 1e2;            % Pressure
 
