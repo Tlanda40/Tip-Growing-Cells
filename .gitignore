@@ -1,0 +1,6 @@
+/cgal_geodesic/build/
+*.exe
+*.o
+*.obj
+*.log
+*.DS_Store

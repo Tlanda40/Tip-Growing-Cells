@@ -8,10 +8,9 @@ structural pdemodel and general pdemodel toolboxes. Files used in the most
 recent iterations are directly exposed in Tip-Growing-Cells, whereas older
 versions, references, and other tools are stored in subfolders in case they are
 needed. When files in subfolders are no longer needed, they are removed. See the
-**Table of Contents** for descriptions of subfolder contents, see **Exposed Files**
-for descriptions  and see **Instructions** for help with setup, installation
-of dependencies, and troubleshooting. This repo is a work in progress! See
-**Updates** to see my work pipeline and the latest updates.
+**Table of Contents** for descriptions of the subfolders and exposed files and
+see **Instructions** for help with setup, installation of dependencies, and 
+troubleshooting. This repo is a work in progress!
 
 ## Table of Contents
 ### FreeCAD Macros
@@ -54,7 +53,46 @@ This is the C++ source directory. It contains the source code which implements
 CGAL's MMP exact geodesic in `geodesic_example.cpp`, as well as the configuration
 file and the build directory, which contains mesh data, compiled files, and the
 executable. This is *not* an unused subfolder. It is the only folder which
-contains files that are called by the files currently exposed in this repo.
+contains files that are called by the files currently exposed in this repo. In
+particular, it is called by `FEMODELVERSIONMMP.m`.
 
-### Exposed Files
+### `ExtensibilityProfileTester.m`
+This file is used to plot and tune extensibility profiles and Young's Modulus
+profiles.
 
+### `FEMODELVERSIONBASIC.m`
+This file is the simplest implementation of a single-domain FEMODEL with
+nonconstant material properties. Is varies material properties with xy-distance
+instead of geodesic distance, for simplicity, and is used as a reference for
+the two other exposed FEMODEL implementations.
+
+### `FEMODELVERSIONDIJKSTRA.m`
+This is an implementation of FEMODEL which uses Dijkstra's algorithm to
+calculate geodesic distances within the mesh. Material properties are assigned
+correctly, but their values are less accurate (overestimated) than the values
+in `FEMODELVERSIONMMP.m`. Because Dijkstra's algorithm is implemented
+natively in MATLAB, this file is easy to run, and it is also low runtime.
+Because of these useful properties, it is used for development and
+troubleshooting of `FEMODELVERSIONMMP.m`.
+
+### `FEMODELVERSIONMMP.m`
+This is an implementation of FEMODEL which uses the Mitchell-Mount-Papadimitriou
+exact geodesic algorithm (MMP) to calculate geodesic distances within the mesh.
+It is the most advanced and accurate model in the repo. It also runs the C++
+executable in `/cgal_geodesic/build`.
+
+### `HollowHemisphere.step`
+This is a .step file of the initial geometry, created in freeCAD. This geometry
+is a hemispherical shell with a bottom. Its thickness is one one-hundredth of
+its radius. This file is called in all exposed FEMODEL implementations, and
+most of the archived files in subfolders.
+
+### `README.md`
+The user guide, written in Markdown!
+
+### `write_off.m`
+This file writes a .off file given matrices V and F (vertices and faces) of a mesh.
+It is called by `FEMODELVERSIONMMP.m` in order to export the mesh into a format
+acceptable to CGAL functions.
+
+## Instructions
