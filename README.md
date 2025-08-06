@@ -1,5 +1,4 @@
-# Tip-Growing-
-
+# Tip-Growing-Cells
 This repository is a bunch of code that simulates the cell wall expansion
 of a tip growing cell using a finite-element framework in MATLAB. The most
 recent iteration uses a single-domain geometry and the femodel toolbox,
