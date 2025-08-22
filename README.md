@@ -6,47 +6,48 @@ alongside tools in the C++ computational geometry library CGAL. Previous
 iterations have used multi-domain geometries and other frameworks, such as the
 structural pdemodel and general pdemodel toolboxes. Files used in the most
 recent iterations are directly exposed in Tip-Growing-Cells, whereas older
-versions, references, and other tools are stored in subfolders in case they are
-needed. When files in subfolders are no longer needed, they are removed. See the
-**Table of Contents** for descriptions of the subfolders and exposed files and
-see **Instructions** for help with setup and installation of dependencies.
-This repo is a work in progress!
+versions, references, and other tools are stored in the subfolder **References**
+in case they are needed. When files in subfolders are no longer needed, they are
+removed. See the **Table of Contents** for descriptions of the subfolders and 
+exposed files and see **Instructions** for help with setup and installation of 
+dependencies. This repo is a work in progress!
 
 # Table of Contents
 ### FreeCAD Macros
 These files are FreeCad macros used to create the
 initial geometry.
 
-### General PDEMODEL
+### References
+#### General PDEMODEL
 These files use the 3D pdemodel toolbox to create low-level, high-control
 models. Material property tensors are explicitly defined. Unfortunately, the
 solver breaks frequently.
 
-### Multidomain FEMODEL
+#### Multidomain FEMODEL
 These files use the femodel toolbox to create a relatively high-level
 simulation. The geometry is multidomain, enabling greater control and variable
 extensibility, but with significant runtimes (approximately one hour in total).
 Certain matrices have been cached in the subfolder to make the runtime less than
 a second in testing.
 
-### Reference
+#### Basic References
 These files, created by Dylan, are simple geometries undergoing expansion. They
 were used to teach me how FE works in matlab and in general.
 
-### Rico's Code
-This model is a hardcoded 2D description of cell wall expansion at a tip,
-created by Rico. It is a reference for this project. To view the model, run
-`SimulateTipGrowth12280.m`.
-
-### STEP Geometries
+#### STEP Geometries
 These (currently unused) files are initial geometries created in FreeCad.
 
-### Structural PDEMODEL
+#### Structural PDEMODEL
 These files use the static-structural pdemodel toolbox to create basic,
 high-level models. They were used to test certain geometric procedures and more
 complex Geometries created natively and/or imported from Free CAD or Blender.
 These files also contain an initial implementation of turgor pressure
 renormalization. Extensibility is uniform.
+
+### Rico's Code
+This model is a hardcoded 2D description of cell wall expansion at a tip,
+created by Rico. It is a reference for this project. To view the model, run
+`SimulateTipGrowth12280.m`.
 
 ### cgal_geodesic
 This is the C++ source directory. It contains the source code which implements
@@ -64,7 +65,8 @@ profiles.
 This file is the simplest implementation of a single-domain FEMODEL with
 nonconstant material properties. Is varies material properties with xy-distance
 instead of geodesic distance, for simplicity, and is used as a reference for
-the two other exposed FEMODEL implementations.
+the other exposed FEMODEL implementations. It also has a time-loop implemented, for
+tip growth.
 
 ### `FEMODELVERSIONDIJKSTRA.m`
 This is an implementation of FEMODEL which uses Dijkstra's algorithm to

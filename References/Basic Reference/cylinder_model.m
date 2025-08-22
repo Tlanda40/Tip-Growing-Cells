@@ -68,7 +68,7 @@ for i = 1:n_steps
     
     % Clear the axis and replot the updated solution:
     clf;
-    pdeplot3D(model, 'ColorMapData', result.Displacement.Magnitude);
+    pdeplot3D(model, 'ColorMapData', result.Displacement.Magnitude, 'Deformation', result.Displacement);
     title(sprintf('Step %d/%d - Pressure = %.0f Pa', i, n_steps, pressures(i)));
     drawnow;
     
